@@ -8,7 +8,8 @@ const PORT = process.env.PORT || 3000;
 const CHUNK = 380;
 
 app.get("/lyrics", (req, res) => {
-  const song = decodeURI(req.query.song || "").trim();
+  const rawSong = req.query.song || "";
+  const song = decodeURI(rawSong.replace(/\+/g, " ")).trim();
   const part = parseInt(req.query.part || "1");
 
   const lyrics = lyricsDB[song];
