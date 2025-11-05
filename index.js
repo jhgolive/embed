@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Nightbot 문자 제한 대비 안전치
-const CHUNK = 300;
+const CHUNK = 200;
 
 app.get("/lyrics", (req, res) => {
   const rawSong = req.query.song || "";
