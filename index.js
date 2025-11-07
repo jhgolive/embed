@@ -14,11 +14,19 @@ app.get("/lyrics", (req, res) => {
   // 기본값 part=1
   let part = parseInt(req.query.part || "1");
 
-  // "part2", "part 2", "파트2" 등 인식
-  const match = rawSong.match(/(?:part|파트)\s*([0-9]+)/i);
+  // 1️⃣ "part2", "part 2", "파트2" 인식
+  let match = rawSong.match(/(?:part|파트)\s*([0-9]+)/i);
   if (match) {
     part = parseInt(match[1]);
-    rawSong = rawSong.replace(match[0], "").trim(); // 제목에서 part 부분 제거
+    rawSong = rawSong.replace(match[0], "").trim();
+  } 
+  // 2️⃣ 제목 끝에 붙은 "2", "3" 같은 숫자 인식 (예: "좋은날 2")
+  else {
+    const numMatch = rawSong.match(/\b([0-9]+)\b$/);
+    if (numMatch) {
+      part = parseInt(numMatch[1]);
+      rawSong = rawSong.replace(numMatch[0], "").trim();
+    }
   }
 
   const song = rawSong;
@@ -31,7 +39,7 @@ app.get("/lyrics", (req, res) => {
   }
 
   const text = chunks[part - 1] || "";
-  res.send(text || ""); // 내용이 없으면 빈 문자열 반환 (Nightbot에서 출력 안 됨)
+  res.send(text || ""); // 내용이 없으면 빈 문자열
 });
 
 app.listen(PORT, () => console.log("Lyrics server running:", PORT));
